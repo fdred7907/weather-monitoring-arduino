@@ -1,72 +1,39 @@
-int red = 9;
-int yellow = 8;
-int green = 7;
+#include "DHT.h"
 
-void setup(){
-  
-  pinMode(red, OUTPUT);
-  pinMode(yellow, OUTPUT);
-  pinMode(green,  OUTPUT);
-  
+#define DHTPIN 2         // Digital pin connected to the DHT11
+#define DHTTYPE DHT11    // DHT 11
+
+DHT dht(DHTPIN, DHTTYPE);
+
+void setup() {
+  Serial.begin(9600);
+  dht.begin();
+  delay(1000);
+  Serial.println("Temperature\tHumidity"); // Header for Serial Plotter
 }
-void loop(){
-digitalWrite(red, HIGH);
- delay(15000);
-digitalWrite(red,  LOW);
-  
-  digitalWrite(yellow, HIGH);
-delay(1000);
-  digitalWrite(yellow,  LOW);
-delay(500);
 
-  digitalWrite(yellow, HIGH);
-delay(1000);
-  digitalWrite(yellow,  LOW);
-delay(500);
+void loop() {
+  delay(2000); // Wait 2 seconds between readings
 
-  digitalWrite(yellow, HIGH);
-delay(1000);
-  digitalWrite(yellow,  LOW);
-delay(500);
-  
-  digitalWrite(yellow, HIGH);
-delay(1000);
-  digitalWrite(yellow, LOW);
-delay(500);
-  
-  digitalWrite(yellow, HIGH);
-delay(1000);
-  digitalWrite(yellow, LOW);
-delay(500);
-  
-digitalWrite(green, HIGH);
-delay(20000);
-digitalWrite(green,  LOW);
-//  
-// digitalWrite(yellow, HIGH);
-// delay(1000);
-//   digitalWrite(yellow,  LOW);
-// delay(500);
+  float humidity = dht.readHumidity();
+  float temperature = dht.readTemperature(); // Celsius
 
-//   digitalWrite(yellow, HIGH);
-// delay(1000);
-//   digitalWrite(yellow,  LOW);
-// delay(500);
+  if (isnan(humidity) || isnan(temperature)) {
+    Serial.println("Failed to read from DHT11 sensor!");
+    return;
+  }
 
-//   digitalWrite(yellow, HIGH);
-// delay(1000);  
-//   digitalWrite(yellow, LOW);
-// delay(500);
-  
-//   digitalWrite(yellow, HIGH);
-// delay(1000);
-//   digitalWrite(yellow, LOW);
-// delay(500);
-  
-//   digitalWrite(yellow, HIGH);
-// delay(1000);
-//   digitalWrite(yellow, LOW);
-// delay(500);
-  
-  
+  // Print to Serial Monitor (Human-readable)
+  Serial.print("Humidity: ");
+  Serial.print(humidity);
+  Serial.print(" %\t");
+
+  Serial.print("Temperature: ");
+  Serial.print(temperature);
+  Serial.println(" °C");
+
+  // Print to Serial Plotter (Tab-separated)
+  Serial.print(temperature);
+  Serial.print("\t");
+  Serial.println(humidity);
 }
